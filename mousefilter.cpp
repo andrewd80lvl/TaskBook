@@ -59,7 +59,7 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
                 else if(offset_x > offset_y)
                 {
 
-                    if(y > event->screenPos().y()){
+                    if(x > event->screenPos().x()){
                         emit sign_left(xb ,yb);
                         qDebug() << "sign_left" ;
                     }

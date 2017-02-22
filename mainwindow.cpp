@@ -28,11 +28,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QScroller::grabGesture(ui->listView->viewport(), QScroller::LeftMouseButtonGesture);
 
+    index = ui->stackedWidget->currentIndex();
+
     ui->listView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->listView->verticalScrollBar()->setSingleStep(2);
 
     connect(signListView,SIGNAL(sign_touch(int,int)),SLOT(sign_left(int,int)));
     connect(signStackedWidget,SIGNAL(sign_left(int,int)),SLOT(sign_left_stacked(int,int)));
+    connect(signStackedWidget,SIGNAL(sign_right(int,int)),SLOT(sign_right_stacked(int,int)));
 
     connect(signListView,SIGNAL(touch_press(int,int)),SLOT(touch_press(int,int)));
     connect(signListView,SIGNAL(touch_realese(int,int)),delegateTaskList,SLOT(touch_realese(int,int)));
@@ -74,15 +77,29 @@ void MainWindow::sign_left(int x, int y)
 
 void MainWindow::sign_left_stacked(int x, int y)
 {
-    qDebug() << x << ":" <<  y ;
 
-    static int index = 0;
+    index--;
+
+    qDebug() << "indexL:" <<  index ;
+
+    if(index < 0)
+       index = 1;
+
+
+    qDebug() << "indexL:" <<  index ;
+    ui->stackedWidget->setCurrentIndex(index);
+}
+
+void MainWindow::sign_right_stacked(int x, int y)
+{
 
     index++;
 
-    if(index >= 2)
+    if(index > 1)
        index = 0;
 
+    qDebug() << "indexR:" <<  index ;
     ui->stackedWidget->setCurrentIndex(index);
 }
+
 

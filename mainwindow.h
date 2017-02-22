@@ -29,9 +29,13 @@ private:
     MouseFilter *signStackedWidget;
     DelegateListView   *delegateTaskList;
 
+    int index;
+
+
 private slots:
    void sign_left(int x, int y);
    void sign_left_stacked(int x, int y);
+   void sign_right_stacked(int x, int y);
    void touch_press(int x,int y);
 
 signals:
