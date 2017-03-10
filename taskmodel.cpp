@@ -38,9 +38,6 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
     case Qt::FontRole:
         return QFont("Khmer UI",32,20);
 
-
-
-
     default:
         return QVariant();
 

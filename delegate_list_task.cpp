@@ -50,6 +50,41 @@ void DelegateListView::paint(QPainter* pPainter,
     QStyledItemDelegate::paint(pPainter, option, index);
 }
 
+QWidget *DelegateListView::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+  DialogEditTask *dialog_et = new DialogEditTask(parent);
+
+  dialog_et->show();
+
+  return dialog_et;
+}
+
+void DelegateListView::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+
+    DialogEditTask *dialog_et = static_cast< DialogEditTask*>(editor);
+
+    if(index.isValid())
+        dialog_et->setData(index.data().toString());
+
+}
+
+void DelegateListView::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+
+    qDebug() << "setModelData";
+
+    DialogEditTask *dialog_et = static_cast< DialogEditTask*>(editor);
+
+    model->setData(index,dialog_et->getData());
+
+}
+
+void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+
+}
+
 void DelegateListView::touch_press_row(int x, int y,QModelIndex*  index)
 {
 

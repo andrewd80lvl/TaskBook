@@ -6,6 +6,8 @@
 #include <QItemDelegate>
 #include <QStaticText>
 
+#include "dialogedittask.h"
+
 // ======================================================================
 class DelegateListView : public QStyledItemDelegate {
 
@@ -20,7 +22,25 @@ public:
                const QModelIndex&          index
                ) const;
 
+
+    QWidget *createEditor(QWidget *parent,
+                          const QStyleOptionViewItem &option,
+                          const QModelIndex &index) const ;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const ;
+    void setModelData(QWidget *editor,
+                      QAbstractItemModel *model,
+                      const QModelIndex &index) const ;
+
+    void updateEditorGeometry(QWidget *editor,
+                              const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const ;
+
+
+
 private:
+
+    Ui::DialogEditTask *ui_dialog;
 
     QListView *obj_view;
     int  task_edit_row;

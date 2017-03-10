@@ -5,6 +5,9 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
+#include <QtAndroidExtras/QAndroidJniObject>
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -42,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this,SIGNAL(touch_press_row(int,int,QModelIndex *)),delegateTaskList,SLOT(touch_press_row(int,int,QModelIndex *)));
 
+
+
 }
 
 
@@ -52,16 +57,31 @@ MainWindow::~MainWindow()
 
 void MainWindow::touch_press(int x, int y)
 {
-    QModelIndex b = ui->listView->indexAt(QPoint(x,y));
+    qDebug() << "touch_press";
+    QModelIndex m_index = ui->listView->indexAt(QPoint(x,y));
 
-    if(b.isValid()){
-        emit touch_press_row(x,y,&b);
+    if(m_index.isValid()){
+        emit touch_press_row(x,y,&m_index);
         //ui->listView->update(b);
     }
 
+/*
+    QAndroidJniObject javaNotification = QAndroidJniObject::fromString("qw3e");
+    QAndroidJniObject::callStaticMethod<void>("org/qtproject/example/notification/NotificationClient",
+                                       "notify",
+                                       "(Ljava/lang/String;)V",
+                                       javaNotification.object<jstring>());
+                                       */
 
 
 
+    jint a = 2;
+    jint b = 4;
+    jint max = QAndroidJniObject::callStaticMethod<jint>("java/lang/Math", "max", "(II)I", a, b);
+    jdouble randNr = QAndroidJniObject::callStaticMethod<jdouble>("java/lang/Math", "random");
+
+    qDebug() << "max:" << max;
+    qDebug() << "random:" << random;
 }
 
 void MainWindow::sign_left(int x, int y)
