@@ -2,6 +2,7 @@
 #define DIALOGEDITTASK_H
 
 #include <QDialog>
+#include <QEvent>
 
 namespace Ui {
 class DialogEditTask;
@@ -19,8 +20,16 @@ public:
     QString getData();
 
 
+public slots:
+    void pushSaveButton();
+
 private:
     Ui::DialogEditTask *ui;
+
+
+protected:
+     virtual void leaveEvent(QEvent * event);
+
 };
 
 #endif // DIALOGEDITTASK_H

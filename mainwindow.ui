@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>480</height>
+    <width>1219</width>
+    <height>931</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
              <enum>QAbstractItemView::ScrollPerItem</enum>
             </property>
             <property name="spacing">
-             <number>20</number>
+             <number>5</number>
             </property>
             <property name="modelColumn">
              <number>0</number>

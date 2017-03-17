@@ -3,7 +3,8 @@
 
 #include <QObject>
 
-#define sign_OFFSET 50
+#define SING_TOUCH_OFFSET 50
+#define LONG_TOUCH_OFFSET_MSEC 1500
 
 // ======================================================================
 class MouseFilter : public QObject {
@@ -24,9 +25,11 @@ protected:
 
     virtual bool eventFilter(QObject*, QEvent*);
 
+    qint64 sec_from_press;
+
 signals:
-    void touch_press(int x,int y);
-    void touch_realese(int x,int y);
+    void sign_press(int x,int y);
+    void sign_realese(int x,int y);
 
     void sign_left(int x, int y);
     void sign_right(int x, int y);
@@ -35,6 +38,7 @@ signals:
     void sign_bottom(int x, int y);
 
     void sign_touch(int x ,int y);
+    void sign_long_touch(int x ,int y);
 
 
 };

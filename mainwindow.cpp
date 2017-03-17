@@ -5,8 +5,6 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-#include <QtAndroidExtras/QAndroidJniObject>
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,16 +34,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->listView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->listView->verticalScrollBar()->setSingleStep(2);
 
-    connect(signListView,SIGNAL(sign_touch(int,int)),SLOT(sign_left(int,int)));
+
     connect(signStackedWidget,SIGNAL(sign_left(int,int)),SLOT(sign_left_stacked(int,int)));
     connect(signStackedWidget,SIGNAL(sign_right(int,int)),SLOT(sign_right_stacked(int,int)));
 
-    connect(signListView,SIGNAL(touch_press(int,int)),SLOT(touch_press(int,int)));
-    connect(signListView,SIGNAL(touch_realese(int,int)),delegateTaskList,SLOT(touch_realese(int,int)));
+    connect(signListView,SIGNAL(sign_press(int,int)),SLOT(sign_press(int,int)));
+    connect(signListView,SIGNAL(sign_long_touch(int,int)),SLOT(sign_long_touch(int,int)));
 
-    connect(this,SIGNAL(touch_press_row(int,int,QModelIndex *)),delegateTaskList,SLOT(touch_press_row(int,int,QModelIndex *)));
+    connect(signListView,SIGNAL(sign_right(int,int)),delegateTaskList,SLOT(sign_right_task(int,int)));
 
+    connect(this,SIGNAL(sign_press_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_press_row(int,int,QModelIndex *)));
+    connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
 
+    connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
 
 }
 
@@ -55,49 +56,34 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::touch_press(int x, int y)
+void MainWindow::sign_press(int x, int y)
 {
-    qDebug() << "touch_press";
+    qDebug() << "sign_press";
     QModelIndex m_index = ui->listView->indexAt(QPoint(x,y));
 
     if(m_index.isValid()){
-        emit touch_press_row(x,y,&m_index);
-        //ui->listView->update(b);
+        emit sign_press_row(x,y,&m_index);
     }
 
-/*
-    QAndroidJniObject javaNotification = QAndroidJniObject::fromString("qw3e");
-    QAndroidJniObject::callStaticMethod<void>("org/qtproject/example/notification/NotificationClient",
-                                       "notify",
-                                       "(Ljava/lang/String;)V",
-                                       javaNotification.object<jstring>());
-                                       */
 
-
-
-    jint a = 2;
-    jint b = 4;
-    jint max = QAndroidJniObject::callStaticMethod<jint>("java/lang/Math", "max", "(II)I", a, b);
-    jdouble randNr = QAndroidJniObject::callStaticMethod<jdouble>("java/lang/Math", "random");
-
-    qDebug() << "max:" << max;
-    qDebug() << "random:" << random;
 }
 
-void MainWindow::sign_left(int x, int y)
+void MainWindow::sign_long_touch(int x, int y)
 {
-    qDebug() << x << ":" << y;
+    qDebug() << "touch_long_press";
+    QModelIndex m_index = ui->listView->indexAt(QPoint(x,y));
 
-    QModelIndex b = ui->listView->indexAt(QPoint(x,y));
-
-    qDebug() << b.isValid();
-    qDebug() << b.data();
+    if(m_index.isValid()){
+        emit sign_long_touch_row(x,y,&m_index);
+    }
 }
+
+
+
 
 
 void MainWindow::sign_left_stacked(int x, int y)
 {
-
     index--;
 
     qDebug() << "indexL:" <<  index ;

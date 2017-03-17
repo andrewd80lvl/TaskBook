@@ -6,7 +6,7 @@
 #include <QItemDelegate>
 #include <QStaticText>
 
-#include "dialogedittask.h"
+#include "dialog_edit_task.h"
 
 // ======================================================================
 class DelegateListView : public QStyledItemDelegate {
@@ -43,13 +43,16 @@ private:
     Ui::DialogEditTask *ui_dialog;
 
     QListView *obj_view;
-    int  task_edit_row;
+    int  task_press_row; // Press on the task
+    int  task_sign_left; // Reschedule task for tomorrow
 
 
 public slots:
 
-    void touch_press_row(int x, int y, QModelIndex *index);
-    void touch_realese(int x,int y);
+    void sign_press_row(int x, int y, QModelIndex *index);
+    void sign_long_touch_row(int x, int y, QModelIndex *index);
+    void sign_right_task(int x, int y);
+
 
 };
 

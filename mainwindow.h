@@ -9,6 +9,7 @@
 #include "delegate_list_task.h"
 #include "mousefilter.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,15 +32,16 @@ private:
 
     int index;
 
-
 private slots:
-   void sign_left(int x, int y);
+
    void sign_left_stacked(int x, int y);
    void sign_right_stacked(int x, int y);
-   void touch_press(int x,int y);
+   void sign_press(int x,int y);
+   void sign_long_touch(int x,int y);
 
 signals:
-   void touch_press_row(int x,int y,QModelIndex*  index);
+   void sign_press_row(int x,int y,QModelIndex*  index);
+   void sign_long_touch_row(int x,int y,QModelIndex*  index);
 
 
 };

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui androidextras
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,13 +17,13 @@ SOURCES += main.cpp\
     mousefilter.cpp \
     taskmodel.cpp \
     delegate_list_task.cpp \
-    dialogedittask.cpp
+    dialog_edit_task.cpp
 
 HEADERS  += mainwindow.h \
     mousefilter.h \
     taskmodel.h \
     delegate_list_task.h \
-    dialogedittask.h
+    dialog_edit_task.h
 
 FORMS    += mainwindow.ui \
     dialogedittask.ui
@@ -31,15 +31,5 @@ FORMS    += mainwindow.ui \
 CONFIG += mobility
 MOBILITY = 
 
-DISTFILES += \
-    android/AndroidManifest.xml \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradlew \
-    android/res/values/libs.xml \
-    android/res/libs.xml \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew.bat
 
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

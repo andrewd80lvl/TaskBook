@@ -3,14 +3,18 @@
 #include <QtWidgets>
 #include <QDebug>
 #include <QListView>
+#include <QDateTime>
 
 #include "MouseFilter.h"
+
 
 // ----------------------------------------------------------------------
 MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
     : QObject(pobj)
 {
- x,y = 0;
+ x = 0; y = 0;
+
+
 }
 
 // ----------------------------------------------------------------------
@@ -32,7 +36,9 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
             xb = event->x();
             yb = event->y();
 
-            emit touch_press(xb,yb);
+            sec_from_press = QDateTime::currentMSecsSinceEpoch();
+
+            emit sign_press(xb,yb);
 
             return true;
         }
@@ -47,14 +53,17 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
 
                 qDebug() << "Release: " << " x:" << event->screenPos().x() << ",y:" << event->screenPos().y();
 
-                emit touch_realese(event->x(),event->y());
+                emit sign_realese(event->x(),event->y());
 
                 int offset_x = abs(event->screenPos().x() - x);
                 int offset_y = abs(event->screenPos().y() - y);
 
-                if(abs(offset_x - offset_y) < sign_OFFSET)
+                if(abs(offset_x - offset_y) < SING_TOUCH_OFFSET)
                 {
-                    emit sign_touch(xb ,yb);
+                    if(QDateTime::currentMSecsSinceEpoch() - sec_from_press > LONG_TOUCH_OFFSET_MSEC)
+                        emit sign_long_touch(xb ,yb);
+                    else
+                        emit sign_touch(xb ,yb);
                 }
                 else if(offset_x > offset_y)
                 {
@@ -79,8 +88,6 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
                         emit sign_bottom(xb ,yb);
 
                 }
-
-
 
 
                 return true;

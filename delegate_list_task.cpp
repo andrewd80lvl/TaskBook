@@ -2,11 +2,11 @@
 
 #include <QPainter>
 #include <QApplication>
-#include <QDate>
 #include <QLinearGradient>
 #include <QItemDelegate>
 #include <QBrush>
 
+#include "mousefilter.h"
 
 
 DelegateListView::DelegateListView(QObject* pobj = 0)
@@ -14,7 +14,7 @@ DelegateListView::DelegateListView(QObject* pobj = 0)
 {
 
     obj_view = dynamic_cast<QListView*>( pobj );
-    task_edit_row = -1;
+    task_press_row = -1;
 
 }
 
@@ -28,23 +28,37 @@ void DelegateListView::paint(QPainter* pPainter,
     QPen  pen;
     QColor color(Qt::lightGray);
 
-    pen.setWidth(2);
+    //pen.setWidth(0);
 
-    if(index.row() == task_edit_row )
+    if(index.row() == task_sign_left )
+    {
+    //    color = Qt::green;
+
+        QBrush br(Qt::green);
+
+        br.setStyle(Qt::Dense4Pattern);
+        pPainter->setBackground(br);
+
+        pPainter->setBackgroundMode(Qt::TransparentMode);
+
+    }
+    else if(index.row() == task_press_row )
     {
         color = Qt::gray;
-        pen.setColor(Qt::red);
+        //pen.setColor(Qt::red);
 
     }else{
 
-        pen.setColor(Qt::black);
+        //pen.setColor(Qt::black);
     }
 
 
     pPainter->setPen(pen);
-
+/*
     pPainter->fillRect(rect,color);
     pPainter->drawRect(rect);
+    */
+
 
 
     QStyledItemDelegate::paint(pPainter, option, index);
@@ -54,7 +68,6 @@ QWidget *DelegateListView::createEditor(QWidget *parent, const QStyleOptionViewI
 {
   DialogEditTask *dialog_et = new DialogEditTask(parent);
 
-  dialog_et->show();
 
   return dialog_et;
 }
@@ -85,23 +98,49 @@ void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 
 }
 
-void DelegateListView::touch_press_row(int x, int y,QModelIndex*  index)
+void DelegateListView::sign_press_row(int x, int y,QModelIndex*  index)
 {
+    qDebug() << "sign_touch_row:" << index->row() ;
 
-    qDebug() << "PRESS:" << index->row() ;
+    if(index->isValid()){
 
-    obj_view->update(index->model()->index(task_edit_row,0));
+        int row_was_pressed = task_press_row;
 
-    task_edit_row = index->row();
+        task_press_row = index->row();
+        obj_view->update(*index);
+
+        QModelIndex  index_was = index->model()->index(row_was_pressed,0);
+
+        if(index_was.isValid())
+           obj_view->update(index_was);
+    }
+}
+
+void DelegateListView::sign_long_touch_row(int x, int y,QModelIndex*  index)
+{
+    qDebug() << "sign_long_touch_row:" << index->row() ;
 
     if(index->isValid())
-     obj_view->update(*index);
-
+      obj_view->edit(*index);
 }
 
-void DelegateListView::touch_realese(int x, int y)
+void DelegateListView::sign_right_task(int x, int y)
 {
-    //press_row = -1;
-    qDebug() << "REALESE";
-}
+    qDebug() << "sign_left_task";
 
+    QModelIndex indx_task = obj_view->indexAt(QPoint(x,y));
+
+    if(indx_task.isValid())
+    {
+        int was_row = task_sign_left;
+
+        task_sign_left = indx_task.row();
+        obj_view->update(indx_task);
+
+        QModelIndex  index_was = indx_task.model()->index(was_row,0);
+
+        if(index_was.isValid())
+           obj_view->update(index_was);
+    }
+
+}
