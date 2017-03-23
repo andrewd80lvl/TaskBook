@@ -6,12 +6,7 @@
 TaskModel::TaskModel(QObject *parent) : QAbstractListModel(parent)
 {
 
-    QModelIndex idx;
-    idx.sibling(0,0);
-
     task_list << "Добавить задачу";
-    QVariant add_new();
-    setData(idx,add_new,Qt::UserRole);
 
     for(int i=0; i < 5; i++)
     {
@@ -37,16 +32,20 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return QVariant(task_list.at(index.row()));
 
     case Qt::SizeHintRole:
-        return QSize(0,150);
+        return QSize(0,200);
+
 
     case Qt::DecorationRole:
         return QIcon(":/images/icons/icon.png");
 
+   /*
     case Qt::BackgroundRole:
          return QBrush(Qt::yellow);
 
+
     case Qt::FontRole:
         return QFont("Khmer UI",28,true);
+    */
 
     case Qt::UserRole:
 

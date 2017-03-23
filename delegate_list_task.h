@@ -23,6 +23,9 @@ public:
                const QModelIndex&          index
                ) const;
 
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index
+                   ) const;
 
     QWidget *createEditor(QWidget *parent,
                           const QStyleOptionViewItem &option,
@@ -47,6 +50,8 @@ private:
     int  task_press_row; // Press on the task
     int  task_sign_left; // Reschedule task for tomorrow
 
+    void drawItemBackground( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    void paintHeader(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 public slots:
 

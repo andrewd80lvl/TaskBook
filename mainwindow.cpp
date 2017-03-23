@@ -79,6 +79,9 @@ void MainWindow::sign_press(int x, int y)
     if(m_index.isValid()){
         emit sign_press_row(x,y,&m_index);
     }
+
+    ui->listView->reset();
+
 }
 
 void MainWindow::sign_long_touch(int x, int y)
@@ -92,9 +95,6 @@ void MainWindow::sign_long_touch(int x, int y)
 
 
 }
-
-
-
 
 
 void MainWindow::sign_left_stacked(int x, int y)
