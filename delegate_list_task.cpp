@@ -15,6 +15,7 @@ DelegateListView::DelegateListView(QObject* pobj = 0)
 
     obj_view = dynamic_cast<QListView*>( pobj );
     task_press_row = -1;
+    task_sign_left = -1;
 
 }
 
@@ -23,29 +24,32 @@ void DelegateListView::paint(QPainter* pPainter,
            const QModelIndex&          index
            ) const
 {
+
     QRect  rect = option.rect;
 
     QPen  pen;
-    QColor color(Qt::lightGray);
 
-    //pen.setWidth(0);
+    pen.setWidth(1);
+
+    QColor color;
+
+    if(index.data(Qt::UserRole).toInt() != 1)
+        color =  Qt::white;
+    else
+        color =  Qt::lightGray;
+
 
     if(index.row() == task_sign_left )
     {
-    //    color = Qt::green;
-
-        QBrush br(Qt::green);
-
-        br.setStyle(Qt::Dense4Pattern);
-        pPainter->setBackground(br);
-
-        pPainter->setBackgroundMode(Qt::TransparentMode);
-
+       color = Qt::green;
+       
     }
-    else if(index.row() == task_press_row )
+
+    if(index.row() == task_press_row )
     {
         color = Qt::gray;
         //pen.setColor(Qt::red);
+
 
     }else{
 
@@ -54,20 +58,16 @@ void DelegateListView::paint(QPainter* pPainter,
 
 
     pPainter->setPen(pen);
-/*
+
     pPainter->fillRect(rect,color);
+    
     pPainter->drawRect(rect);
-    */
 
-
-
-    QStyledItemDelegate::paint(pPainter, option, index);
 }
 
 QWidget *DelegateListView::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
   DialogEditTask *dialog_et = new DialogEditTask(parent);
-
 
   return dialog_et;
 }

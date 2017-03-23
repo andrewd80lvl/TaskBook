@@ -31,5 +31,10 @@ FORMS    += mainwindow.ui \
 CONFIG += mobility
 MOBILITY = 
 
+DISTFILES +=
+
+RESOURCES += \
+    res.qrc
+
 
 

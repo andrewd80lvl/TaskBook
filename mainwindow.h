@@ -25,7 +25,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    TaskModel *model;
+    TaskModel *modelTaskBook;
     MouseFilter *signListView;
     MouseFilter *signStackedWidget;
     DelegateListView   *delegateTaskList;
@@ -38,10 +38,12 @@ private slots:
    void sign_right_stacked(int x, int y);
    void sign_press(int x,int y);
    void sign_long_touch(int x,int y);
+   void sign_right_task(int x,int y);
 
 signals:
    void sign_press_row(int x,int y,QModelIndex*  index);
    void sign_long_touch_row(int x,int y,QModelIndex*  index);
+   void sign_right_index(const QModelIndex& index);
 
 
 };

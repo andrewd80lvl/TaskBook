@@ -18,21 +18,23 @@ MainWindow::MainWindow(QWidget *parent) :
     signListView = new MouseFilter(ui->listView);
     ui->listView->viewport()->installEventFilter(signListView);
 
-    model = new TaskModel (this);
-    ui->listView->setModel(model);
+    modelTaskBook = new TaskModel(this);
+    ui->listView->setModel(modelTaskBook);
+
 
     delegateTaskList = new DelegateListView(ui->listView);
     ui->listView->setItemDelegate(delegateTaskList);
+
     //ui->listView->viewport()->setAttribute(Qt::WA_Hover);
 
-    ui->listView->show();
+    //ui->listView->show();
 
     QScroller::grabGesture(ui->listView->viewport(), QScroller::LeftMouseButtonGesture);
 
     index = ui->stackedWidget->currentIndex();
 
     ui->listView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->listView->verticalScrollBar()->setSingleStep(2);
+    ui->listView->verticalScrollBar()->setSingleStep(5);
 
 
     connect(signStackedWidget,SIGNAL(sign_left(int,int)),SLOT(sign_left_stacked(int,int)));
@@ -41,19 +43,32 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(signListView,SIGNAL(sign_press(int,int)),SLOT(sign_press(int,int)));
     connect(signListView,SIGNAL(sign_long_touch(int,int)),SLOT(sign_long_touch(int,int)));
 
-    connect(signListView,SIGNAL(sign_right(int,int)),delegateTaskList,SLOT(sign_right_task(int,int)));
 
     connect(this,SIGNAL(sign_press_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_press_row(int,int,QModelIndex *)));
     connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
-
     connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
 
+
+    connect(signListView,SIGNAL(sign_right(int,int)),SLOT(sign_right_task(int,int)));
 }
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::sign_right_task(int x,int y)
+{
+    qDebug() << "sign_right_task";
+    QModelIndex m_index = ui->listView->indexAt(QPoint(x,y));
+
+    if(m_index.isValid()){
+
+        if(m_index.data(Qt::UserRole).toInt() != 1)
+            modelTaskBook->removeRow(m_index.row(),m_index);
+    }
+
 }
 
 void MainWindow::sign_press(int x, int y)
@@ -64,8 +79,6 @@ void MainWindow::sign_press(int x, int y)
     if(m_index.isValid()){
         emit sign_press_row(x,y,&m_index);
     }
-
-
 }
 
 void MainWindow::sign_long_touch(int x, int y)
@@ -76,6 +89,8 @@ void MainWindow::sign_long_touch(int x, int y)
     if(m_index.isValid()){
         emit sign_long_touch_row(x,y,&m_index);
     }
+
+
 }
 
 

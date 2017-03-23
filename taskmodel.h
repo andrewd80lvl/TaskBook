@@ -5,6 +5,11 @@
 #include <QSize>
 #include <QBrush>
 #include <QFont>
+#include <QIcon>
+
+#define TASK_ADD_NEW 1
+#define TASK_SIMPLE 2
+
 
 class TaskModel : public QAbstractListModel
 {
@@ -21,11 +26,15 @@ public:
     // функция сохранение
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
+    // функция удаления
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
 
     QStringList task_list;
+
 };
 
 #endif // TASKMODEL_H

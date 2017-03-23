@@ -8,6 +8,7 @@
 
 #include "dialog_edit_task.h"
 
+
 // ======================================================================
 class DelegateListView : public QStyledItemDelegate {
 

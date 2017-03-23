@@ -1,14 +1,23 @@
 #include "taskmodel.h"
 
+#include <QDebug>
 
 
 TaskModel::TaskModel(QObject *parent) : QAbstractListModel(parent)
 {
 
-    for(int i=0; i < 50; i++)
+    QModelIndex idx;
+    idx.sibling(0,0);
+
+    task_list << "Добавить задачу";
+    QVariant add_new();
+    setData(idx,add_new,Qt::UserRole);
+
+    for(int i=0; i < 5; i++)
     {
-        task_list << "Задача №" + QString::number(i);
+        task_list << "Задача № " + QString::number(i);
     }
+
 }
 
 int TaskModel::rowCount(const QModelIndex &parent) const
@@ -28,15 +37,23 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         return QVariant(task_list.at(index.row()));
 
     case Qt::SizeHintRole:
-        return QSize(0,200);
+        return QSize(0,150);
 
-    /*
+    case Qt::DecorationRole:
+        return QIcon(":/images/icons/icon.png");
+
     case Qt::BackgroundRole:
-        return QBrush(Qt::yellow);
-   */
+         return QBrush(Qt::yellow);
 
     case Qt::FontRole:
-        return QFont("Khmer UI",32,20);
+        return QFont("Khmer UI",28,true);
+
+    case Qt::UserRole:
+
+        if(index.row() == 0)
+            return TASK_ADD_NEW;
+        else
+            return TASK_SIMPLE;
 
     default:
         return QVariant();
@@ -52,6 +69,29 @@ bool TaskModel::setData(const QModelIndex &index, const QVariant &value, int rol
     return true;
 }
 
+bool TaskModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+   Q_UNUSED(parent);
+
+   qDebug() << "removeRows";
+
+   if((row + count) > task_list.count()){
+       qCritical() << "error removeRows";
+       return false;
+   }
+
+   // tell QT what you will be doing
+   beginRemoveRows(QModelIndex(),row,(row + count)-1);
+
+   for(int i = row; i < (count + row); i++){
+       task_list.removeAt(i);
+   }
+
+   endRemoveRows();
+
+   return true;
+}
+
 
 Qt::ItemFlags TaskModel::flags(const QModelIndex &index) const
 {
@@ -60,3 +100,4 @@ Qt::ItemFlags TaskModel::flags(const QModelIndex &index) const
 
     return Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
+

@@ -4,7 +4,7 @@
 #include <QObject>
 
 #define SING_TOUCH_OFFSET 50
-#define LONG_TOUCH_OFFSET_MSEC 1500
+#define LONG_TOUCH_OFFSET_MSEC 750
 
 // ======================================================================
 class MouseFilter : public QObject {
