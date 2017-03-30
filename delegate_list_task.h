@@ -7,6 +7,7 @@
 #include <QStaticText>
 
 #include "dialog_edit_task.h"
+#include "new_edit_form.h"
 
 
 // ======================================================================
@@ -27,18 +28,27 @@ public:
                    const QModelIndex &index
                    ) const;
 
+
     QWidget *createEditor(QWidget *parent,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const ;
 
-    void setEditorData(QWidget *editor, const QModelIndex &index) const ;
-    void setModelData(QWidget *editor,
+
+    bool  editorEvent(QEvent *event,
                       QAbstractItemModel *model,
-                      const QModelIndex &index) const ;
+                      const QStyleOptionViewItem &option,
+                      const QModelIndex &index);
 
     void updateEditorGeometry(QWidget *editor,
                               const QStyleOptionViewItem &option,
-                              const QModelIndex &index) const ;
+                              const QModelIndex &index) const;
+
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const ;
+
+    void setModelData(QWidget *editor,
+                      QAbstractItemModel *model,
+                      const QModelIndex &index) const ;
 
 
 
@@ -52,6 +62,7 @@ private:
 
     void drawItemBackground( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     void paintHeader(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+        void paintDescription(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 public slots:
 

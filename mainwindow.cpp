@@ -25,9 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     delegateTaskList = new DelegateListView(ui->listView);
     ui->listView->setItemDelegate(delegateTaskList);
 
-    //ui->listView->viewport()->setAttribute(Qt::WA_Hover);
-
-    //ui->listView->show();
 
     QScroller::grabGesture(ui->listView->viewport(), QScroller::LeftMouseButtonGesture);
 
@@ -50,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(signListView,SIGNAL(sign_right(int,int)),SLOT(sign_right_task(int,int)));
+
+    //connect(model(), SIGNAL(needUpdate(QModelIndex)), this, SLOT(update(const QModelIndex &)));
+    //connect(ui->listView, SIGNAL(needUpdate(QModelIndex)), itemDelegate(), SIGNAL(sizeHintChanged(QModelIndex)));
 }
 
 
@@ -80,7 +80,11 @@ void MainWindow::sign_press(int x, int y)
         emit sign_press_row(x,y,&m_index);
     }
 
-    ui->listView->reset();
+
+
+   //m_index.model()->set
+
+   // ui->listView->reset();
 
 }
 
@@ -91,7 +95,11 @@ void MainWindow::sign_long_touch(int x, int y)
 
     if(m_index.isValid()){
         emit sign_long_touch_row(x,y,&m_index);
+
+
     }
+
+
 
 
 }

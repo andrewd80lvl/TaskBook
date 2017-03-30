@@ -69,8 +69,8 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
                 {
 
                     if(x > event->screenPos().x()){
-                        emit sign_left(xb ,yb);
                         qDebug() << "sign_left" ;
+                        emit sign_left(xb ,yb);
                     }
                     else{
                         qDebug() << "sign_right";
@@ -79,14 +79,10 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
 
                 }else{
 
-                    qDebug() << "vartical" ;
-
-
                     if(x > event->screenPos().x())
                         emit sign_top (xb ,yb);
                     else
                         emit sign_bottom(xb ,yb);
-
                 }
 
 

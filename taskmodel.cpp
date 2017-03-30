@@ -8,7 +8,7 @@ TaskModel::TaskModel(QObject *parent) : QAbstractListModel(parent)
 
     task_list << "Добавить задачу";
 
-    for(int i=0; i < 5; i++)
+    for(int i=0; i < 15; i++)
     {
         task_list << "Задача № " + QString::number(i);
     }

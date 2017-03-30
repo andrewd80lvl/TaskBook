@@ -17,16 +17,16 @@ SOURCES += main.cpp\
     mousefilter.cpp \
     taskmodel.cpp \
     delegate_list_task.cpp \
-    dialog_edit_task.cpp
+    new_edit_form.cpp
 
 HEADERS  += mainwindow.h \
     mousefilter.h \
     taskmodel.h \
     delegate_list_task.h \
-    dialog_edit_task.h
+    new_edit_form.h
 
 FORMS    += mainwindow.ui \
-    dialogedittask.ui
+    new_edit_form.ui
 
 CONFIG += mobility
 MOBILITY = 

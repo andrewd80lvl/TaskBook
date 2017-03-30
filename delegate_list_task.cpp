@@ -87,8 +87,7 @@ void DelegateListView::paintHeader( QPainter * painter, const QStyleOptionViewIt
 
     // рисуем текст
     QRect tr;
-    QString name = index.data(Qt::DisplayRole).toString(),
-    desc = "AAAaaaa"; //index.data(QvObjectModel::DetailRole).toString();
+    QString name = index.data(Qt::DisplayRole).toString();
 
     QFont f = option.font;
     f.setPointSize(23);
@@ -97,14 +96,23 @@ void DelegateListView::paintHeader( QPainter * painter, const QStyleOptionViewIt
     QFontMetrics fm(f);
     tr = fm.boundingRect(name);
     p.setFont(f);
+
     p.drawText(option.rect, Qt::AlignVCenter | Qt::AlignLeft, name);
 
+    p.restore();
+}
+
+void DelegateListView::paintDescription( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QPainter &p = *painter;
+    p.save();
+
+    QString desc = "AAAaaaa"; //index.data(QvObjectModel::DetailRole).toString();
+    QFont f = option.font;
     f = option.font;
     f.setWeight(QFont::DemiBold);
     p.setFont(f);
     p.drawText(option.rect, Qt::AlignBottom | Qt::AlignRight, desc);
-
-    p.restore();
 }
 
 
@@ -113,45 +121,6 @@ void DelegateListView::paint(QPainter* pPainter,
            const QModelIndex&          index
            ) const
 {
-/*
-    QRect  rect = option.rect;
-
-    QPen  pen;
-
-    pen.setWidth(1);
-
-    QColor color;
-
-    if(index.data(Qt::UserRole).toInt() != 1)
-        color =  Qt::white;
-    else
-        color =  Qt::lightGray;
-
-
-    if(index.row() == task_sign_left )
-    {
-       color = Qt::green;
-
-    }
-
-    if(index.row() == task_press_row )
-    {
-        //color = Qt::gray;
-        drawItemBackground(pPainter,option,index);
-
-    }else{
-
-        //pen.setColor(Qt::black);
-    }
-
-    pPainter->setPen(pen);
-    pPainter->fillRect(rect,color);
-    pPainter->drawRect(rect);
-
-    QStyledItemDelegate::paint(pPainter,option,index);
-    */
-
-
 
     QString text = index.data().toString();
     QRectF r = option.rect;
@@ -166,9 +135,9 @@ void DelegateListView::paint(QPainter* pPainter,
     if(index.row() == task_press_row )
     {
         drawItemBackground(pPainter,option,index);
+        paintDescription(pPainter,option,index);
+
     }
-
-
 
 
     paintHeader(pPainter,option,index);
@@ -179,28 +148,64 @@ QSize DelegateListView::sizeHint(const QStyleOptionViewItem &option, const QMode
 {
 
     QSize size = QStyledItemDelegate::sizeHint(option, index);
+
     if(index.row() == task_press_row)
     {
-        size.setHeight(250);
+        size.setHeight(350);
     }
+
+
     return size;
 
 }
 
 QWidget *DelegateListView::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  DialogEditTask *dialog_et = new DialogEditTask(parent);
+  //DialogEditTask *dialog_et = new DialogEditTask(parent);
 
-  return dialog_et;
+  newEditForm * new_form = new newEditForm();
+
+  new_form->setParent(parent,Qt::Window);
+  new_form->setWindowModality(Qt::WindowModal);
+
+  new_form->resize(QSize(1080,1860));
+  new_form->move(QPoint(QPoint(0,1860)));
+
+
+  return new_form;
+}
+
+
+
+bool DelegateListView::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+    /*
+    Q_UNUSED(model);
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+*/
+    qDebug() << event;
+
+    return false;
+}
+
+void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+
+    QPropertyAnimation *animation = new QPropertyAnimation(editor, "pos", obj_view);
+    animation->setDuration(1000);
+    animation->setStartValue(QPoint(0,1860));
+    animation->setEndValue(QPoint(0,0));
+    animation->start();
 }
 
 void DelegateListView::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
 
-    DialogEditTask *dialog_et = static_cast< DialogEditTask*>(editor);
+    newEditForm *edit_form = static_cast<newEditForm*>(editor);
 
     if(index.isValid())
-        dialog_et->setData(index.data().toString());
+        edit_form->setData(index.data().toString());
 
 }
 
@@ -208,15 +213,8 @@ void DelegateListView::setModelData(QWidget *editor, QAbstractItemModel *model, 
 {
 
     qDebug() << "setModelData";
-
-    DialogEditTask *dialog_et = static_cast< DialogEditTask*>(editor);
-
-    model->setData(index,dialog_et->getData());
-
-}
-
-void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
+    newEditForm *edit_form = static_cast< newEditForm*>(editor);
+    model->setData(index,edit_form->getData());
 
 }
 
@@ -236,6 +234,9 @@ void DelegateListView::sign_press_row(int x, int y,QModelIndex*  index)
         if(index_was.isValid())
            obj_view->update(index_was);
     }
+
+    emit sizeHintChanged(*index);
+
 }
 
 void DelegateListView::sign_long_touch_row(int x, int y,QModelIndex*  index)
