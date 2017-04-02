@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "dbacsecc.h"
 #include <QScroller>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -18,8 +18,19 @@ MainWindow::MainWindow(QWidget *parent) :
     signListView = new MouseFilter(ui->listView);
     ui->listView->viewport()->installEventFilter(signListView);
 
-    modelTaskBook = new TaskModel(this);
-    ui->listView->setModel(modelTaskBook);
+    connectDb = new DBacsecc();
+    connectDb->connectDB("123");
+
+    modelSql = new QSqlTableModel(this,*(connectDb->getSqlDatabase()));
+    modelSql->setTable("my_task");
+    modelSql->setEditStrategy(QSqlTableModel::OnFieldChange);
+    modelSql->select();
+
+    //modelTaskBook = new TaskModel(this);
+    //ui->listView->setModel(modelTaskBook);
+
+    ui->listView->setModel(modelSql);
+    ui->listView->setModelColumn(1);
 
 
     delegateTaskList = new DelegateListView(ui->listView);
@@ -66,7 +77,11 @@ void MainWindow::sign_right_task(int x,int y)
     if(m_index.isValid()){
 
         if(m_index.data(Qt::UserRole).toInt() != 1)
-            modelTaskBook->removeRow(m_index.row(),m_index);
+            //modelTaskBook->removeRow(m_index.row(),m_index);
+            modelSql->removeRow(m_index.row());
+            connectDb->getSqlDatabase()->commit();
+
+            modelSql->select();
     }
 
 }

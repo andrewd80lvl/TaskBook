@@ -6,7 +6,6 @@
 #include <QItemDelegate>
 #include <QStaticText>
 
-#include "dialog_edit_task.h"
 #include "new_edit_form.h"
 
 
@@ -53,8 +52,6 @@ public:
 
 
 private:
-
-    Ui::DialogEditTask *ui_dialog;
 
     QListView *obj_view;
     int  task_press_row; // Press on the task

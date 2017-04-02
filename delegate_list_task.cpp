@@ -45,6 +45,7 @@ void DelegateListView::drawItemBackground( QPainter * painter, const QStyleOptio
    baseColor = QColor(0xBa, 0xA4,0x16);
 
 
+
     baseColor.setAlpha(200);
     painter->setBrush(baseColor);
     painter->setPen(Qt::NoPen);
@@ -149,6 +150,8 @@ QSize DelegateListView::sizeHint(const QStyleOptionViewItem &option, const QMode
 
     QSize size = QStyledItemDelegate::sizeHint(option, index);
 
+    size.setHeight(250);
+
     if(index.row() == task_press_row)
     {
         size.setHeight(350);
@@ -193,7 +196,7 @@ void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionV
 {
 
     QPropertyAnimation *animation = new QPropertyAnimation(editor, "pos", obj_view);
-    animation->setDuration(1000);
+    animation->setDuration(2000);
     animation->setStartValue(QPoint(0,1860));
     animation->setEndValue(QPoint(0,0));
     animation->start();
@@ -215,6 +218,8 @@ void DelegateListView::setModelData(QWidget *editor, QAbstractItemModel *model, 
     qDebug() << "setModelData";
     newEditForm *edit_form = static_cast< newEditForm*>(editor);
     model->setData(index,edit_form->getData());
+
+    editor->close();
 
 }
 
@@ -265,5 +270,4 @@ void DelegateListView::sign_right_task(int x, int y)
         if(index_was.isValid())
            obj_view->update(index_was);
     }
-
 }

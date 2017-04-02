@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     mousefilter.cpp \
     taskmodel.cpp \
     delegate_list_task.cpp \
-    new_edit_form.cpp
+    new_edit_form.cpp \
+    dbacsecc.cpp
 
 HEADERS  += mainwindow.h \
     mousefilter.h \
     taskmodel.h \
     delegate_list_task.h \
-    new_edit_form.h
+    new_edit_form.h \
+    dbacsecc.h
 
 FORMS    += mainwindow.ui \
     new_edit_form.ui
@@ -31,8 +33,13 @@ FORMS    += mainwindow.ui \
 CONFIG += mobility
 MOBILITY = 
 
-DISTFILES +=
+DISTFILES += db/my_objective.db3
 
+android {
+    data.files = db/my_objective.db3
+    data.path = /assets/db/
+    INSTALLS += data
+}
 RESOURCES += \
     res.qrc
 

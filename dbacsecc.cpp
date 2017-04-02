@@ -3,9 +3,12 @@
 DBacsecc::DBacsecc()
 {
 
-    //sdb.close();
 }
 
+DBacsecc::~DBacsecc()
+{
+    p_sdb->close();
+}
 
 bool DBacsecc::connectDB(QString db_name)
 {
@@ -20,7 +23,7 @@ bool DBacsecc::connectDB(QString db_name)
 
     filePath.append( "/my_objective.db3");
 
-    if (dfile.exists()) {
+    if (!dfile.exists()) {
         if( QFile::exists( filePath ) )
             qDebug() << QFile::remove( filePath );
 
@@ -29,6 +32,7 @@ bool DBacsecc::connectDB(QString db_name)
 
     }
 
+    qDebug() << filePath;
     p_sdb->setDatabaseName( filePath );
 #else
     p_sdb->setDatabaseName("db\\my_objective.db3");
@@ -50,9 +54,11 @@ bool DBacsecc::connectDB(QString db_name)
         return false;
     }
 
+
+
     if(p_sdb->isValid()){
 
-       qDebug("Sqlite bd open!");
+       qDebug("Sqlite bd valid!");
 
     }else{
 

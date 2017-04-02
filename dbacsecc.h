@@ -13,9 +13,12 @@ class DBacsecc
 {
 public:
     DBacsecc();
+    ~DBacsecc();
 
     bool connectDB(QString db_name);
     bool getResultQuery(QString sql_query,QSqlQuery &sqlQuery);
+
+    QSqlDatabase *getSqlDatabase() {return p_sdb;}
 
 private:
     QSqlDatabase *p_sdb;

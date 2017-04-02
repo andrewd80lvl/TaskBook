@@ -4,10 +4,12 @@
 #include <QStringListModel>
 #include <QMainWindow>
 #include <QDebug>
+#include <QSqlTableModel>
 
 #include "taskmodel.h"
 #include "delegate_list_task.h"
 #include "mousefilter.h"
+#include "dbacsecc.h"
 
 
 namespace Ui {
@@ -25,7 +27,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    TaskModel *modelTaskBook;
+
+    //TaskModel *modelTaskBook;
+    DBacsecc *connectDb;
+    QSqlTableModel *modelSql;
+
     MouseFilter *signListView;
     MouseFilter *signStackedWidget;
     DelegateListView   *delegateTaskList;
