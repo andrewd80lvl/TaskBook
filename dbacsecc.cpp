@@ -23,16 +23,18 @@ bool DBacsecc::connectDB(QString db_name)
 
     filePath.append( "/my_objective.db3");
 
-    if (!dfile.exists()) {
-        if( QFile::exists( filePath ) )
-            qDebug() << QFile::remove( filePath );
+    if ( ! QFile::exists( filePath ) ) {
 
-        if( dfile.copy( filePath ) )
-            qDebug() << QFile::setPermissions( filePath, QFile::WriteOwner | QFile::ReadOwner );
+        if( dfile.exists() ){
 
+            qDebug() << "remove:"<< QFile::remove( filePath );
+
+            if( dfile.copy( filePath ) )
+                qDebug()<< "setPermissions:" << QFile::setPermissions( filePath, QFile::WriteOwner | QFile::ReadOwner );
+        }
     }
 
-    qDebug() << filePath;
+    qDebug() << "filePath" << filePath;
     p_sdb->setDatabaseName( filePath );
 #else
     p_sdb->setDatabaseName("db\\my_objective.db3");

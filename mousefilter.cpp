@@ -16,9 +16,7 @@ MouseFilter::MouseFilter(QObject* pobj/*= 0*/)
 
 
 }
-
 // ----------------------------------------------------------------------
-
 /*virtual*/bool MouseFilter::eventFilter(QObject* pobj, QEvent* pe)
 {
 
