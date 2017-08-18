@@ -27,7 +27,7 @@ bool DBacsecc::connectDB(QString db_name)
 
         if( dfile.exists() ){
 
-            qDebug() << "remove:"<< QFile::remove( filePath );
+            // qDebug() << "remove:"<< QFile::remove( filePath );
 
             if( dfile.copy( filePath ) )
                 qDebug()<< "setPermissions:" << QFile::setPermissions( filePath, QFile::WriteOwner | QFile::ReadOwner );
