@@ -27,24 +27,9 @@ void DelegateListView::drawItemBackground( QPainter * painter, const QStyleOptio
 
     painter->setClipRect(option.rect);
     painter->setOpacity(0.2);
-/*
-    QColor baseColor;
-    if(
-        (index.flags() & Qt::ItemFlag(QvAbstractListItem::DownloadedNeedRestart))
-        || (index.flags() & Qt::ItemFlag(QvAbstractListItem::UpdatedNeedRestart))
-        )
-        baseColor = QColor(0x4C, 0xBB,0x17);
 
-    if(
-        (index.flags() & Qt::ItemFlag(QvAbstractListItem::EnabledNeedRestart))
-        || (index.flags() & Qt::ItemFlag(QvAbstractListItem::DisabledNeedRestart))
-        || (index.flags() & Qt::ItemFlag(QvAbstractListItem::RemovedNeedRestart))
-        )
- */
    QColor baseColor;
    baseColor = QColor(0xBa, 0xA4,0x16);
-
-
 
     baseColor.setAlpha(200);
     painter->setBrush(baseColor);
@@ -187,7 +172,7 @@ bool DelegateListView::editorEvent(QEvent *event, QAbstractItemModel *model, con
     Q_UNUSED(option);
     Q_UNUSED(index);
 */
-    qDebug() << event;
+    qDebug() << "editorEvent";
 
     return false;
 }
@@ -195,8 +180,11 @@ bool DelegateListView::editorEvent(QEvent *event, QAbstractItemModel *model, con
 void DelegateListView::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 
+    qDebug() << editor->geometry();
+
+
     QPropertyAnimation *animation = new QPropertyAnimation(editor, "pos", obj_view);
-    animation->setDuration(2000);
+    animation->setDuration(700);
     animation->setStartValue(QPoint(0,1860));
     animation->setEndValue(QPoint(0,0));
     animation->start();
@@ -217,10 +205,10 @@ void DelegateListView::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
     qDebug() << "setModelData";
     newEditForm *edit_form = static_cast< newEditForm*>(editor);
+
     model->setData(index,edit_form->getData());
 
     editor->close();
-
 }
 
 void DelegateListView::sign_press_row(int x, int y,QModelIndex*  index)
@@ -250,7 +238,28 @@ void DelegateListView::sign_long_touch_row(int x, int y,QModelIndex*  index)
 
     if(index->isValid())
       obj_view->edit(*index);
+
 }
+
+void DelegateListView::sign_touch_add_task()
+{
+  int row = obj_view->model()->rowCount();
+  qDebug() << "row:"<<row;
+  qDebug() << obj_view->model()->insertRow(row);
+
+
+  QModelIndex index = obj_view->model()->index(row,0);
+
+
+  if(index.isValid())
+  {
+    qDebug() << "!!!";
+    qDebug() << obj_view->model()->setData(index,QString("fdg"));
+    obj_view->setCurrentIndex(index);
+    obj_view->edit(index);
+  }
+}
+
 
 void DelegateListView::sign_right_task(int x, int y)
 {

@@ -2,6 +2,7 @@
 #define NEW_EDIT_FORM_H
 
 #include <QWidget>
+#include <QDate>
 
 namespace Ui {
 class new_edit_form;

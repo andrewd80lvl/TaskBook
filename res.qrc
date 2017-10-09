@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/images">
         <file>icons/icon.png</file>
+        <file>icons/add.png</file>
+        <file>icons/add-doc_black.png</file>
+        <file>icons/add-doc_red.png</file>
+        <file>icons/plus.png</file>
     </qresource>
 </RCC>

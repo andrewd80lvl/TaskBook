@@ -66,6 +66,7 @@ public slots:
     void sign_press_row(int x, int y, QModelIndex *index);
     void sign_long_touch_row(int x, int y, QModelIndex *index);
     void sign_right_task(int x, int y);
+    void sign_touch_add_task();
 
 
 };

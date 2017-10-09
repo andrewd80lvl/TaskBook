@@ -6,16 +6,20 @@ newEditForm::newEditForm(QWidget *parent) :
     ui(new Ui::new_edit_form)
 {
     ui->setupUi(this);
+
+    //ui->label->setText();
 }
 
 newEditForm::~newEditForm()
 {
+
     delete ui;
 }
 
 void newEditForm::setData(QString task)
 {
    ui->plainTextEdit->setPlainText(task);
+
 }
 
 QString newEditForm::getData()

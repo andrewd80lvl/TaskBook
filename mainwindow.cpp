@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dbacsecc.h"
+
+
 #include <QScroller>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -12,50 +14,66 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    signStackedWidget = new MouseFilter(ui->stackedWidget);
-    ui->stackedWidget->installEventFilter(signStackedWidget);
-
     signListView = new MouseFilter(ui->listView);
     ui->listView->viewport()->installEventFilter(signListView);
+
+    signDataLabel = new MouseFilter(ui->label);
+    ui->label->installEventFilter(signDataLabel);
 
     connectDb = new DBacsecc();
     connectDb->connectDB("123");
 
+    index_date = new QDate();
+
+    QDate current_date = QDate::currentDate();
+    index_date->setDate(current_date.year(),current_date.month(),current_date.day());
+
+    QString date = index_date->toString("dd.MM.yyyy");
+    ui->label->setText(date);
+
+    QString filter_date = QString("date='%1'").arg(date);
+
+    qDebug() << filter_date;
+
+
     modelSql = new QSqlTableModel(this,*(connectDb->getSqlDatabase()));
     modelSql->setTable("my_task");
-    modelSql->setEditStrategy(QSqlTableModel::OnFieldChange);
+    modelSql->setEditStrategy(QSqlTableModel::OnRowChange);
+    modelSql->setFilter(filter_date);
     modelSql->select();
-
-    //modelTaskBook = new TaskModel(this);
-    //ui->listView->setModel(modelTaskBook);
 
     ui->listView->setModel(modelSql);
     ui->listView->setModelColumn(1);
 
-
     delegateTaskList = new DelegateListView(ui->listView);
     ui->listView->setItemDelegate(delegateTaskList);
 
-
     QScroller::grabGesture(ui->listView->viewport(), QScroller::LeftMouseButtonGesture);
-
-    index = ui->stackedWidget->currentIndex();
 
     ui->listView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->listView->verticalScrollBar()->setSingleStep(5);
 
 
-    connect(signStackedWidget,SIGNAL(sign_left(int,int)),SLOT(sign_left_stacked(int,int)));
-    connect(signStackedWidget,SIGNAL(sign_right(int,int)),SLOT(sign_right_stacked(int,int)));
+    m_buttonAdd = new ButtonAboveWindow(this);
+    signAddTask = new MouseFilter(m_buttonAdd);
+    m_buttonAdd->installEventFilter(signAddTask);
+
+
+
+    connect(this,SIGNAL(resize_main_window()),m_buttonAdd,SLOT(resizeMainWindow()));
+
+    connect(signDataLabel,SIGNAL(sign_left(int,int)),SLOT(sign_left_date(int,int)));
+    connect(signDataLabel,SIGNAL(sign_right(int,int)),SLOT(sign_right_date(int,int)));
 
     connect(signListView,SIGNAL(sign_press(int,int)),SLOT(sign_press(int,int)));
     connect(signListView,SIGNAL(sign_long_touch(int,int)),SLOT(sign_long_touch(int,int)));
+
+    connect(signAddTask,SIGNAL(sign_touch(int,int)),delegateTaskList,SLOT(sign_touch_add_task()));
 
 
     connect(this,SIGNAL(sign_press_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_press_row(int,int,QModelIndex *)));
     connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
     connect(this,SIGNAL(sign_long_touch_row(int,int,QModelIndex *)),delegateTaskList,SLOT(sign_long_touch_row(int,int,QModelIndex *)));
-
 
     connect(signListView,SIGNAL(sign_right(int,int)),SLOT(sign_right_task(int,int)));
 
@@ -77,13 +95,20 @@ void MainWindow::sign_right_task(int x,int y)
     if(m_index.isValid()){
 
         if(m_index.data(Qt::UserRole).toInt() != 1)
-            //modelTaskBook->removeRow(m_index.row(),m_index);
+
             modelSql->removeRow(m_index.row());
-            connectDb->getSqlDatabase()->commit();
+           // connectDb->getSqlDatabase()->commit();
 
             modelSql->select();
     }
 
+}
+
+
+
+void MainWindow::resizeEvent(QResizeEvent *)
+{
+  emit resize_main_window();
 }
 
 void MainWindow::sign_press(int x, int y)
@@ -95,12 +120,8 @@ void MainWindow::sign_press(int x, int y)
         emit sign_press_row(x,y,&m_index);
     }
 
-
-
-   //m_index.model()->set
-
-   // ui->listView->reset();
-
+   //  m_index.model()->set;
+   //  ui->listView->reset();
 }
 
 void MainWindow::sign_long_touch(int x, int y)
@@ -110,40 +131,40 @@ void MainWindow::sign_long_touch(int x, int y)
 
     if(m_index.isValid()){
         emit sign_long_touch_row(x,y,&m_index);
-
-
     }
-
-
-
-
 }
 
 
-void MainWindow::sign_left_stacked(int x, int y)
+void MainWindow::sign_left_date(int x, int y)
 {
-    index--;
+    qDebug() << "indexL:";
 
-    qDebug() << "indexL:" <<  index ;
+    QDate current_date = index_date->addDays(1);
+    index_date->setDate(current_date.year(),current_date.month(),current_date.day());
 
-    if(index < 0)
-       index = 1;
+    QString date = index_date->toString("dd.MM.yyyy");
+    ui->label->setText(date);
 
+    QString filter_date = QString("date='%1'").arg(date);
 
-    qDebug() << "indexL:" <<  index ;
-    ui->stackedWidget->setCurrentIndex(index);
+        modelSql->setFilter(filter_date);
+    modelSql->select();
 }
 
-void MainWindow::sign_right_stacked(int x, int y)
+void MainWindow::sign_right_date(int x, int y)
 {
 
-    index++;
+    QDate current_date = index_date->addDays(-1);
+    index_date->setDate(current_date.year(),current_date.month(),current_date.day());
 
-    if(index > 1)
-       index = 0;
+    QString date = index_date->toString("dd.MM.yyyy");
 
-    qDebug() << "indexR:" <<  index ;
-    ui->stackedWidget->setCurrentIndex(index);
+    ui->label->setText(date);
+
+    QString filter_date = QString("date='%1'").arg(date);
+
+    modelSql->setFilter(filter_date);
+    modelSql->select();
 }
 
 
